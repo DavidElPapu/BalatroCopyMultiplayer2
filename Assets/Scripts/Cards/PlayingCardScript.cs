@@ -2,59 +2,17 @@ using UnityEngine;
 
 public class PlayingCardScript : MonoBehaviour
 {
-    public enum CardSuit
-    {
-        Clubs,
-        Diamonds,
-        Hearts,
-        Spades
-    }
-    public enum CardEnhancement
-    {
-        None,
-        Glass,
-        Gold,
-        Lucky,
-        Mult,
-        Bonus,
-        Stone,
-        Steel,
-        Wild
-    }
-    public enum CardEdition
-    {
-        Base,
-        Foil,
-        Holographic,
-        Polychrome
-    }
-    public enum CardSeal
-    {
-        None,
-        Red,
-        Blue,
-        Purple,
-        Gold
-    }
-
     //public 
     public int rank;
-    public CardSuit suit;
-    public CardEnhancement enhancement;
-    public CardEdition edition;
-    public CardSeal seal;
+    public CardSuits suit;
+    public CardEnhancements enhancement;
+    public CardEditions edition;
+    public CardSeals seal;
 
-    [Header("Sprites")]
-    public Sprite[] clubRankSprites = new Sprite[13];
-    public Sprite[] diamondRankSprites = new Sprite[13];
-    public Sprite[] heartRankSprites = new Sprite[13];
-    public Sprite[] spadeRankSprites = new Sprite[13];
-    public Sprite[] cardEnhancementSprites = new Sprite[9];
-    public Sprite[] cardEditionSprites = new Sprite[3];
-    public Sprite[] cardSealSprites = new Sprite[4];
+    
     public SpriteRenderer cardSuitedRankSprite, cardEnhancementSprite, cardEditionSprite, cardSealSprite; 
 
-    public void SetData(int rank, CardSuit suit, CardEnhancement enhancement, CardEdition edition, CardSeal seal)
+    public void SetData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal)
     {
         this.rank = rank;
         ChangeSuit(suit);
@@ -93,17 +51,17 @@ public class PlayingCardScript : MonoBehaviour
         rank = newRank;
         switch (suit)
         {
-            case CardSuit.Clubs:
-                cardSuitedRankSprite.sprite = clubRankSprites[rank - 1];
+            case CardSuits.Clubs:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.clubRankSprites[rank - 1];
                 break;
-            case CardSuit.Diamonds:
-                cardSuitedRankSprite.sprite = diamondRankSprites[rank - 1];
+            case CardSuits.Diamonds:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.diamondRankSprites[rank - 1];
                 break;
-            case CardSuit.Hearts:
-                cardSuitedRankSprite.sprite = heartRankSprites[rank - 1];
+            case CardSuits.Hearts:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.heartRankSprites[rank - 1];
                 break;
-            case CardSuit.Spades:
-                cardSuitedRankSprite.sprite = spadeRankSprites[rank - 1];
+            case CardSuits.Spades:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.spadeRankSprites[rank - 1];
                 break;
             default:
                 Debug.LogError("No tiene suit");
@@ -111,22 +69,22 @@ public class PlayingCardScript : MonoBehaviour
         }
     }
 
-    public void ChangeSuit(CardSuit newSuit)
+    public void ChangeSuit(CardSuits newSuit)
     {
         suit = newSuit;
         switch (suit)
         {
-            case CardSuit.Clubs:
-                cardSuitedRankSprite.sprite = clubRankSprites[rank - 1];
+            case CardSuits.Clubs:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.clubRankSprites[rank - 1];
                 break;
-            case CardSuit.Diamonds:
-                cardSuitedRankSprite.sprite = diamondRankSprites[rank - 1];
+            case CardSuits.Diamonds:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.diamondRankSprites[rank - 1];
                 break;
-            case CardSuit.Hearts:
-                cardSuitedRankSprite.sprite = heartRankSprites[rank - 1];
+            case CardSuits.Hearts:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.heartRankSprites[rank - 1];
                 break;
-            case CardSuit.Spades:
-                cardSuitedRankSprite.sprite = spadeRankSprites[rank - 1];
+            case CardSuits.Spades:
+                cardSuitedRankSprite.sprite = CardCreator.singleton.spadeRankSprites[rank - 1];
                 break;
             default:
                 Debug.LogError("Suit no valido");
@@ -134,37 +92,37 @@ public class PlayingCardScript : MonoBehaviour
         }
     }
 
-    public void ChangeEnhancement(CardEnhancement newEnhancement)
+    public void ChangeEnhancement(CardEnhancements newEnhancement)
     {
         enhancement = newEnhancement;
         switch (enhancement)
         {
-            case CardEnhancement.None:
-                cardEnhancementSprite.sprite = cardEditionSprites[0];
+            case CardEnhancements.None:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[0];
                 break;
-            case CardEnhancement.Glass:
-                cardEnhancementSprite.sprite = cardEditionSprites[4];
+            case CardEnhancements.Bonus:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[1];
                 break;
-            case CardEnhancement.Gold:
-                cardEnhancementSprite.sprite = cardEditionSprites[7];
+            case CardEnhancements.Mult:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[2];
                 break;
-            case CardEnhancement.Lucky:
-                cardEnhancementSprite.sprite = cardEditionSprites[8];
+            case CardEnhancements.Wild:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[3];
                 break;
-            case CardEnhancement.Mult:
-                cardEnhancementSprite.sprite = cardEditionSprites[2];
+            case CardEnhancements.Glass:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[4];
                 break;
-            case CardEnhancement.Bonus:
-                cardEnhancementSprite.sprite = cardEditionSprites[1];
+            case CardEnhancements.Steel:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[5];
                 break;
-            case CardEnhancement.Stone:
-                cardEnhancementSprite.sprite = cardEditionSprites[6];
+            case CardEnhancements.Stone:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[6];
                 break;
-            case CardEnhancement.Steel:
-                cardEnhancementSprite.sprite = cardEditionSprites[5];
+            case CardEnhancements.Gold:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[7];
                 break;
-            case CardEnhancement.Wild:
-                cardEnhancementSprite.sprite = cardEditionSprites[3];
+            case CardEnhancements.Lucky:
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[8];
                 break;
             default:
                 Debug.LogError("Enhancement no valido");
@@ -172,22 +130,22 @@ public class PlayingCardScript : MonoBehaviour
         }
     }
 
-    public void ChangeEdition(CardEdition newEdition)
+    public void ChangeEdition(CardEditions newEdition)
     {
         edition = newEdition;
         switch (edition)
         {
-            case CardEdition.Base:
+            case CardEditions.Base:
                 cardEditionSprite.sprite = null;
                 break;
-            case CardEdition.Foil:
-                cardEditionSprite.sprite = cardEditionSprites[0];
+            case CardEditions.Foil:
+                cardEditionSprite.sprite = CardCreator.singleton.cardEditionSprites[0];
                 break;
-            case CardEdition.Holographic:
-                cardEditionSprite.sprite = cardEditionSprites[1];
+            case CardEditions.Holographic:
+                cardEditionSprite.sprite = CardCreator.singleton.cardEditionSprites[1];
                 break;
-            case CardEdition.Polychrome:
-                cardEditionSprite.sprite = cardEditionSprites[2];
+            case CardEditions.Polychrome:
+                cardEditionSprite.sprite = CardCreator.singleton.cardEditionSprites[2];
                 break;
             default:
                 Debug.LogError("Edition no valido");
@@ -195,25 +153,25 @@ public class PlayingCardScript : MonoBehaviour
         }
     }
 
-    public void ChangeSeal(CardSeal newSeal)
+    public void ChangeSeal(CardSeals newSeal)
     {
         seal = newSeal;
         switch (seal)
         {
-            case CardSeal.None:
+            case CardSeals.None:
                 cardSealSprite.sprite = null;
                 break;
-            case CardSeal.Red:
-                cardSealSprite.sprite = cardSealSprites[1];
+            case CardSeals.Red:
+                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[1];
                 break;
-            case CardSeal.Blue:
-                cardSealSprite.sprite = cardSealSprites[2];
+            case CardSeals.Blue:
+                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[2];
                 break;
-            case CardSeal.Purple:
-                cardSealSprite.sprite = cardSealSprites[3];
+            case CardSeals.Purple:
+                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[3];
                 break;
-            case CardSeal.Gold:
-                cardSealSprite.sprite = cardSealSprites[0];
+            case CardSeals.Gold:
+                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[0];
                 break;
             default:
                 Debug.LogError("Seal no valido");
