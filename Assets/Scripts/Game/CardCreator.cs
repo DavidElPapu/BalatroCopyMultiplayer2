@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardCreator : MonoBehaviour
+public class CardCreator : NetworkBehaviour
 {
     public static CardCreator singleton;
 
@@ -19,21 +19,21 @@ public class CardCreator : MonoBehaviour
     private void Awake()
     {
         if (singleton != null && singleton != this) { Destroy(this); } else { singleton = this; }
-
     }
 
-    public void CreateRandomCard(bool canHaveExtras)
+    public PlayingCardScript CreateRandomCard(bool canHaveExtras, Transform pos)
     {
-        GameObject newCard = Instantiate(cardPrefab);
+        GameObject newCard = Instantiate(cardPrefab, pos.position, pos.rotation);
         if (canHaveExtras)
             newCard.GetComponent<PlayingCardScript>().SetData(GetRandomRank(), GetRandomSuit(), GetRandomEnhancement(), GetRandomEdition(), GetRandomSeal());
         else
             newCard.GetComponent<PlayingCardScript>().SetData(GetRandomRank(), GetRandomSuit(), CardEnhancements.None, CardEditions.Base, CardSeals.None);
+        return newCard.GetComponent<PlayingCardScript>();
     }
 
-    public void CreateCardWithData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal)
+    public void CreateCardWithData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal, Transform spawnTransform)
     {
-        GameObject newCard = Instantiate(cardPrefab);
+        GameObject newCard = Instantiate(cardPrefab, spawnTransform.position, spawnTransform.rotation);
         newCard.GetComponent<PlayingCardScript>().SetData(rank, suit, enhancement, edition, seal);
     }
 

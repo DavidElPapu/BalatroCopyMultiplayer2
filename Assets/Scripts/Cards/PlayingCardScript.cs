@@ -98,31 +98,32 @@ public class PlayingCardScript : MonoBehaviour
         switch (enhancement)
         {
             case CardEnhancements.None:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[0];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[0];
                 break;
             case CardEnhancements.Bonus:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[1];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[1];
                 break;
             case CardEnhancements.Mult:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[2];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[2];
                 break;
             case CardEnhancements.Wild:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[3];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[3];
                 break;
             case CardEnhancements.Glass:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[4];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[4];
                 break;
             case CardEnhancements.Steel:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[5];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[5];
                 break;
             case CardEnhancements.Stone:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[6];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[6];
+                cardSuitedRankSprite.sprite = null;
                 break;
             case CardEnhancements.Gold:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[7];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[7];
                 break;
             case CardEnhancements.Lucky:
-                cardEnhancementSprite.sprite = CardCreator.singleton.cardEditionSprites[8];
+                cardEnhancementSprite.sprite = CardCreator.singleton.cardEnhancementSprites[8];
                 break;
             default:
                 Debug.LogError("Enhancement no valido");
@@ -161,6 +162,9 @@ public class PlayingCardScript : MonoBehaviour
             case CardSeals.None:
                 cardSealSprite.sprite = null;
                 break;
+            case CardSeals.Gold:
+                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[0];
+                break;
             case CardSeals.Red:
                 cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[1];
                 break;
@@ -169,9 +173,6 @@ public class PlayingCardScript : MonoBehaviour
                 break;
             case CardSeals.Purple:
                 cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[3];
-                break;
-            case CardSeals.Gold:
-                cardSealSprite.sprite = CardCreator.singleton.cardSealSprites[0];
                 break;
             default:
                 Debug.LogError("Seal no valido");

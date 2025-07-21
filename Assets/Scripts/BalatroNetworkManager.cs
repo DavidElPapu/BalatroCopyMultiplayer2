@@ -259,6 +259,7 @@ public class BalatroNetworkManager : NetworkManager
     {
         MainMenuScript mainMenuPanel = FindAnyObjectByType<MainMenuScript>();
         maxConnections = mainMenuPanel.GetMaxPlayers();
+        Debug.Log("Server iniciado, con un maximo de " + maxConnections + " jugadores");
     }
 
     /// <summary>

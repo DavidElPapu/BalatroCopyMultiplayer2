@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using TMPro;
+using UnityEngine.InputSystem;
+using UnityEditor.Experimental.GraphView;
+using static UnityEditor.PlayerSettings;
+using UnityEngine.SceneManagement;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
@@ -17,8 +21,7 @@ public class MainPlayerScript : NetworkBehaviour
 
     private MainMenuScript mainMenuPanel;
 
-    public GameObject cursorObject;
-    private float cursorSpeed = 1f;
+    public float cursorSpeed;
 
     #region Unity Callbacks
 
@@ -42,7 +45,10 @@ public class MainPlayerScript : NetworkBehaviour
 
     private void Update()
     {
+        if (!isLocalPlayer) return;
         MoveMouse();
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            CreateCard();
     }
 
     #endregion
@@ -85,6 +91,7 @@ public class MainPlayerScript : NetworkBehaviour
         mainMenuPanel = FindAnyObjectByType<MainMenuScript>();
         CommandChangeName(mainMenuPanel.GetPlayerName());
         mainMenuPanel.gameObject.SetActive(false);
+        CommandRegisterPlayerMoney();
         //CommandRegisterPlayer();
         //playerHUD = FindFirstObjectByType<PlayerHUD>(FindObjectsInactive.Include);
         //playerHUD.gameObject.SetActive(true);
@@ -115,17 +122,33 @@ public class MainPlayerScript : NetworkBehaviour
 
     #endregion
 
-    public void PrintHola()
+    private void CreateCard()
     {
-        Debug.Log("Hola");
+        CommandTemporalCreateCard();
+        //ClientTemporalCreateCard(myCard);
+    }
+
+    [Command]
+    private void CommandTemporalCreateCard()
+    {
+        PlayingCardScript newCard = CardCreator.singleton.CreateRandomCard(true, transform);
+        //GameObject newCard = Instantiate(CardCreator.singleton.cardPrefab, cursorObject.transform.position, cursorObject.transform.rotation);
+        //GameObject myCard = CardCreator.singleton.CreateRandomCard(true, transform);
+        ClientTemporalCreateCard(newCard.rank, newCard.suit, newCard.enhancement, newCard.edition, newCard.seal);
+    }
+
+    [ClientRpc]
+    private void ClientTemporalCreateCard(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal)
+    {
+        //if (isLocalPlayer) return;
+        CardCreator.singleton.CreateCardWithData(rank, suit, enhancement, edition, seal, transform);
     }
 
     private void MoveMouse()
     {
-        if (!isLocalPlayer) return;
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        cursorObject.transform.position = Vector3.MoveTowards(cursorObject.transform.position, mousePos, cursorSpeed * Time.deltaTime);
+        Vector3 newCursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        newCursorPos.z = 0;
+        transform.position = Vector3.MoveTowards(transform.position, newCursorPos, cursorSpeed * Time.deltaTime);
     }
 
     [Command]
@@ -138,5 +161,11 @@ public class MainPlayerScript : NetworkBehaviour
     {
         nameTagObject.text = newName;
         name = newName;
+    }
+
+    [Command]
+    private void CommandRegisterPlayerMoney()
+    {
+        PlayerEconomy.singleton.RegisterPlayer(this);
     }
 }
