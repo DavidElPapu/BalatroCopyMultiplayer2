@@ -1643,7 +1643,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.55
+  m_fontSize: 20.75
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2033,7 +2033,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.4
+  m_fontSize: 30.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3620,7 +3620,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37.15
+  m_fontSize: 32.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5060,7 +5060,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.55
+  m_fontSize: 20.75
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7708,6 +7708,7 @@ GameObject:
   - component: {fileID: 2059437248}
   - component: {fileID: 2059437252}
   - component: {fileID: 2059437251}
+  - component: {fileID: 2059437253}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -7869,6 +7870,20 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   startingMoney: 4
+  player1MoneyText: {fileID: 585419267}
+  player2MoneyText: {fileID: 2031038358}
+--- !u!114 &2059437253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059437247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1401b7555a45fd440872b49a54bdc8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   player1MoneyText: {fileID: 585419267}
   player2MoneyText: {fileID: 2031038358}
 --- !u!1 &2074292421

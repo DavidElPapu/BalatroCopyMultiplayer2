@@ -26,8 +26,8 @@ public class PlayerEconomy : NetworkBehaviour
     public void RegisterPlayer(MainPlayerScript player)
     {
         players.Add(player);
-        playersMoney.Add(0);
-        ChangePlayerMoney(player, startingMoney);
+        playersMoney.Add(startingMoney);
+        //ChangePlayerMoney(player, startingMoney);
         Debug.Log("Se registro el jugador #" + player.name);
     }
 
@@ -49,11 +49,27 @@ public class PlayerEconomy : NetworkBehaviour
             if (players[i] == player)
             {
                 playersMoney[i] += moneyChange;
-                UpdateMoneyText(i);
+                //player.CommandUpdateMoneyUI();
                 return;
             }
         }
         Debug.LogError("No se encontro jugador");
+    }
+
+    public void UpdateMoneyUI(int player1Money, int player2Money)
+    {
+        player1MoneyText.text = player1Money.ToString();
+        player2MoneyText.text = player2Money.ToString();
+    }
+
+    public int GetPlayers()
+    {
+        return players.Count;
+    }
+
+    public int GetPlayerMoney(int playerIndex)
+    {
+        return playersMoney[playerIndex];
     }
 
     private void UpdateMoneyText(int playerIndex)

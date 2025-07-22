@@ -19,6 +19,10 @@ public class MainPlayerScript : NetworkBehaviour
     [SyncVar(hook = nameof(NameChanged))]
     private string username;
 
+    [Header("NameTag")]
+    private RoundUIManager roundUIManager;
+
+
     private MainMenuScript mainMenuPanel;
 
     public float cursorSpeed;
@@ -48,7 +52,8 @@ public class MainPlayerScript : NetworkBehaviour
         if (!isLocalPlayer) return;
         MoveMouse();
         if (Input.GetKeyDown(KeyCode.Mouse0))
-            CreateCard();
+            //KnowPlayers();
+            CommandTemporalCreateCard();
     }
 
     #endregion
@@ -60,7 +65,10 @@ public class MainPlayerScript : NetworkBehaviour
     /// <para>This could be triggered by NetworkServer.Listen() for objects in the scene, or by NetworkServer.Spawn() for objects that are dynamically created.</para>
     /// <para>This will be called for objects on a "host" as well as for object on a dedicated server.</para>
     /// </summary>
-    public override void OnStartServer() { }
+    public override void OnStartServer() 
+    {
+        //CommandRegisterPlayerMoney();
+    }
 
     /// <summary>
     /// Invoked on the server when the object is unspawned
@@ -91,6 +99,7 @@ public class MainPlayerScript : NetworkBehaviour
         mainMenuPanel = FindAnyObjectByType<MainMenuScript>();
         CommandChangeName(mainMenuPanel.GetPlayerName());
         mainMenuPanel.gameObject.SetActive(false);
+        roundUIManager = FindAnyObjectByType<RoundUIManager>();
         CommandRegisterPlayerMoney();
         //CommandRegisterPlayer();
         //playerHUD = FindFirstObjectByType<PlayerHUD>(FindObjectsInactive.Include);
@@ -129,18 +138,31 @@ public class MainPlayerScript : NetworkBehaviour
     }
 
     [Command]
+    public void CommandUpdateMoneyUI()
+    {
+        //PlayerEconomy.singleton.UpdateMoneyUI();
+        ClientUpdateMoneyUI();
+    }
+
+    [ClientRpc]
+    public void ClientUpdateMoneyUI()
+    {
+        //Debug.Log("Esto lo deberian decir ambos y actualizarse");
+        //PlayerEconomy.singleton.UpdateMoneyUI();
+    }
+
+    [Command]
     private void CommandTemporalCreateCard()
     {
-        PlayingCardScript newCard = CardCreator.singleton.CreateRandomCard(true, transform);
+        CardData newCardData = CardCreator.singleton.GetRandomCardData();
         //GameObject newCard = Instantiate(CardCreator.singleton.cardPrefab, cursorObject.transform.position, cursorObject.transform.rotation);
         //GameObject myCard = CardCreator.singleton.CreateRandomCard(true, transform);
-        ClientTemporalCreateCard(newCard.rank, newCard.suit, newCard.enhancement, newCard.edition, newCard.seal);
+        ClientTemporalCreateCard(newCardData.rank, newCardData.suit, newCardData.enhancement, newCardData.edition, newCardData.seal);
     }
 
     [ClientRpc]
     private void ClientTemporalCreateCard(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal)
     {
-        //if (isLocalPlayer) return;
         CardCreator.singleton.CreateCardWithData(rank, suit, enhancement, edition, seal, transform);
     }
 
@@ -167,5 +189,24 @@ public class MainPlayerScript : NetworkBehaviour
     private void CommandRegisterPlayerMoney()
     {
         PlayerEconomy.singleton.RegisterPlayer(this);
+        //ClientUpdateMoneyUI(this);
+    }
+
+    [Command]
+    private void KnowPlayers()
+    {
+        if(PlayerEconomy.singleton.GetPlayers() == 2)
+        {
+            Debug.Log("El jugador 1 tiene : $" + PlayerEconomy.singleton.GetPlayerMoney(0) + " y el 2 tiene: $" + PlayerEconomy.singleton.GetPlayerMoney(1));
+            //roundUIManager.UpdatePlayersMoneyUI(PlayerEconomy.singleton.GetPlayerMoney(0), PlayerEconomy.singleton.GetPlayerMoney(1));
+            //PlayerEconomy.singleton.UpdateMoneyUI(PlayerEconomy.singleton.GetPlayerMoney(0), PlayerEconomy.singleton.GetPlayerMoney(1));
+            ClientSetPlayersMoneyUI(PlayerEconomy.singleton.GetPlayerMoney(0), PlayerEconomy.singleton.GetPlayerMoney(1));
+        }
+    }
+
+    [ClientRpc]
+    private void ClientSetPlayersMoneyUI(int player1Money, int player2Money)
+    {
+        PlayerEconomy.singleton.UpdateMoneyUI(player1Money, player2Money);
     }
 }

@@ -37,6 +37,11 @@ public class CardCreator : NetworkBehaviour
         newCard.GetComponent<PlayingCardScript>().SetData(rank, suit, enhancement, edition, seal);
     }
 
+    public CardData GetRandomCardData()
+    {
+        return new CardData(GetRandomRank(), GetRandomSuit(), GetRandomEnhancement(), GetRandomEdition(), GetRandomSeal());
+    }
+
     #region Random Card Data Generator
 
     private int GetRandomRank()
@@ -125,6 +130,24 @@ public class CardCreator : NetworkBehaviour
 
     #endregion
 }
+public struct CardData
+{
+    public int rank;
+    public CardSuits suit;
+    public CardEnhancements enhancement;
+    public CardEditions edition;
+    public CardSeals seal;
+
+    public CardData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal)
+    {
+        this.rank = rank;
+        this.suit = suit;
+        this.enhancement = enhancement;
+        this.edition = edition;
+        this.seal = seal;
+    }
+}
+
 public enum CardSuits
 {
     Clubs,
