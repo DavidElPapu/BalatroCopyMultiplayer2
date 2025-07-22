@@ -136,7 +136,6 @@ public class BalatroNetworkManager : NetworkManager
     /// <param name="conn">Connection from client.</param>
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
-        Debug.Log("Se unio un jugador");
         currentPlayers++;
     }
 
@@ -148,9 +147,9 @@ public class BalatroNetworkManager : NetworkManager
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
-        if (currentPlayers == maxConnections)
+        if (currentPlayers > maxConnections)
         {
-            Debug.Log("Listo");
+            conn.Disconnect();
         }
     }
 

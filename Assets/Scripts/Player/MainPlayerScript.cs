@@ -19,8 +19,6 @@ public class MainPlayerScript : NetworkBehaviour
     [SyncVar(hook = nameof(NameChanged))]
     private string username;
 
-    [Header("NameTag")]
-    private RoundUIManager roundUIManager;
 
 
     private MainMenuScript mainMenuPanel;
@@ -52,7 +50,8 @@ public class MainPlayerScript : NetworkBehaviour
         if (!isLocalPlayer) return;
         MoveMouse();
         if (Input.GetKeyDown(KeyCode.Mouse0))
-            //KnowPlayers();
+            ClickOnScreen();
+        if (Input.GetKeyDown(KeyCode.Mouse1))
             CommandTemporalCreateCard();
     }
 
@@ -99,8 +98,9 @@ public class MainPlayerScript : NetworkBehaviour
         mainMenuPanel = FindAnyObjectByType<MainMenuScript>();
         CommandChangeName(mainMenuPanel.GetPlayerName());
         mainMenuPanel.gameObject.SetActive(false);
-        roundUIManager = FindAnyObjectByType<RoundUIManager>();
         CommandRegisterPlayerMoney();
+        CommandRegisterPlayerDeck();
+        CommandRegisterRoundManager();
         //CommandRegisterPlayer();
         //playerHUD = FindFirstObjectByType<PlayerHUD>(FindObjectsInactive.Include);
         //playerHUD.gameObject.SetActive(true);
@@ -131,26 +131,6 @@ public class MainPlayerScript : NetworkBehaviour
 
     #endregion
 
-    private void CreateCard()
-    {
-        CommandTemporalCreateCard();
-        //ClientTemporalCreateCard(myCard);
-    }
-
-    [Command]
-    public void CommandUpdateMoneyUI()
-    {
-        //PlayerEconomy.singleton.UpdateMoneyUI();
-        ClientUpdateMoneyUI();
-    }
-
-    [ClientRpc]
-    public void ClientUpdateMoneyUI()
-    {
-        //Debug.Log("Esto lo deberian decir ambos y actualizarse");
-        //PlayerEconomy.singleton.UpdateMoneyUI();
-    }
-
     [Command]
     private void CommandTemporalCreateCard()
     {
@@ -173,6 +153,38 @@ public class MainPlayerScript : NetworkBehaviour
         transform.position = Vector3.MoveTowards(transform.position, newCursorPos, cursorSpeed * Time.deltaTime);
     }
 
+    private void ClickOnScreen()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit hit;
+        if (hit)
+        {
+            if(hit.collider.gameObject.CompareTag("Card"))
+                OnCardClicked(hit.collider.gameObject);
+        }
+    }
+
+    //[Command]
+    private void OnCardClicked(GameObject clickedCard)
+    {
+        int cardIndex = PlayerDeckManager.singleton.GetCardIndex(clickedCard);
+        int playerIndex = PlayerDeckManager.singleton.GetCardPlayer(clickedCard);
+        CommandMoveCard(cardIndex, playerIndex);
+    }
+
+    [Command]
+    private void CommandMoveCard(int cardIndex, int player)
+    {
+        ClientMoveCard(cardIndex, player);
+    }
+
+    [ClientRpc]
+    private void ClientMoveCard(int cardIndex, int player)
+    {
+        PlayerDeckManager.singleton.ClientMoveCard(cardIndex, player);
+    }
+
     [Command]
     private void CommandChangeName(string myName)
     {
@@ -193,6 +205,19 @@ public class MainPlayerScript : NetworkBehaviour
     }
 
     [Command]
+    private void CommandRegisterPlayerDeck()
+    {
+        PlayerDeckManager.singleton.RegisterPlayer(this);
+        //ClientUpdateMoneyUI(this);
+    }
+
+    [Command]
+    private void CommandRegisterRoundManager()
+    {
+        RoundManager.singleton.RegisterPlayer(this);
+    }
+
+    [Command]
     private void KnowPlayers()
     {
         if(PlayerEconomy.singleton.GetPlayers() == 2)
@@ -208,5 +233,18 @@ public class MainPlayerScript : NetworkBehaviour
     private void ClientSetPlayersMoneyUI(int player1Money, int player2Money)
     {
         PlayerEconomy.singleton.UpdateMoneyUI(player1Money, player2Money);
+    }
+
+    [Server]
+    public void OnGameStart()
+    {
+        ClientCommandGetUI();
+    }
+    
+    [ClientRpc]
+    private void ClientCommandGetUI()
+    {
+        if (!isLocalPlayer) return;
+        //RoundManager.singleton
     }
 }

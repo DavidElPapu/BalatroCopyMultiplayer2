@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using TMPro;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
@@ -9,26 +10,60 @@ using Mirror;
 
 public class RoundManager : NetworkBehaviour
 {
-    #region Unity Callbacks
+    public static RoundManager singleton;
 
-    /// <summary>
-    /// Add your validation code here after the base.OnValidate(); call.
-    /// </summary>
-    protected override void OnValidate()
+    [Header("Rounds")]
+    public TextMeshPro roundText;
+    private int currentRound;
+    [Header("Ante")]
+    public TextMeshPro anteText;
+    public int maxAnte;
+    public float[] anteBaseScores = new float[9];
+    private int currentAnte, currentAnteRound;
+    [Header("Blinds")]
+    public List<BlindSO> blindsSO = new List<BlindSO>();
+    public SpriteRenderer blindIconRenderer;
+    public TextMeshPro blindNameText, blindScoreText;
+    private int currentBlindIndex;
+    private float currentBlindScore;
+
+
+    private List<MainPlayerScript> players = new List<MainPlayerScript>();
+
+    private void Awake()
     {
-        base.OnValidate();
+        if (singleton != null && singleton != this) { Destroy(this); } else { singleton = this; }
     }
 
-    // NOTE: Do not put objects in DontDestroyOnLoad (DDOL) in Awake.  You can do that in Start instead.
-    void Awake()
+    public void OnGameStart()
     {
+        currentRound = 1;
+        currentAnte = 1;
+        currentAnteRound = 1;
+        currentBlindIndex = GetBlindIndex();
+        currentBlindScore = anteBaseScores[currentAnte] * blindsSO[currentBlindIndex].baseScoreMultiplier;
+        UpdatePlayersUI(currentRound, currentAnte, currentBlindIndex, currentBlindScore, PlayerEconomy.singleton.GetPlayerMoney(0), PlayerEconomy.singleton.GetPlayerMoney(1));
+        PlayerDeckManager.singleton.CreatePlayerDecks();
+        PlayerDeckManager.singleton.SetPlayerHands();
     }
 
-    void Start()
+    [ClientRpc]
+    private void UpdatePlayersUI(int currentRound, int currentAnte, int currentBlindIndex, float currentBlindScore, int player1Money, int player2Money)
     {
+        roundText.text = currentRound.ToString();
+        anteText.text = currentAnte.ToString() + "/" + maxAnte;
+        blindNameText.text = blindsSO[currentBlindIndex].blindName;
+        blindIconRenderer.sprite = blindsSO[currentBlindIndex].icon;
+        blindScoreText.text = currentBlindScore.ToString();
+        PlayerEconomy.singleton.UpdateMoneyUI(player1Money, player2Money);
     }
 
-    #endregion
+    public void RegisterPlayer(MainPlayerScript player)
+    {
+        players.Add(player);
+        if (players.Count == NetworkManager.singleton.maxConnections)
+            OnGameStart();
+    }
 
     #region Start & Stop Callbacks
 
@@ -83,4 +118,12 @@ public class RoundManager : NetworkBehaviour
     public override void OnStopAuthority() { }
 
     #endregion
+
+    private int GetBlindIndex()
+    {
+        if (currentAnteRound <= 2)
+            return currentAnteRound - 1;
+        else
+            return Random.Range(2, blindsSO.Count);
+    }
 }

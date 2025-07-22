@@ -31,10 +31,11 @@ public class CardCreator : NetworkBehaviour
         return newCard.GetComponent<PlayingCardScript>();
     }
 
-    public void CreateCardWithData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal, Transform spawnTransform)
+    public GameObject CreateCardWithData(int rank, CardSuits suit, CardEnhancements enhancement, CardEditions edition, CardSeals seal, Transform spawnTransform)
     {
         GameObject newCard = Instantiate(cardPrefab, spawnTransform.position, spawnTransform.rotation);
         newCard.GetComponent<PlayingCardScript>().SetData(rank, suit, enhancement, edition, seal);
+        return newCard;
     }
 
     public CardData GetRandomCardData()
